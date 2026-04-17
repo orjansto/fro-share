@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Frø</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, system-ui, sans-serif; background: #f0fdf4; color: #374151; min-height: 100vh; }
+    .wrap { max-width: 480px; margin: 0 auto; padding: 24px 16px 48px; }
+    .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; gap: 16px; color: #6b7280; }
+    .spinner { width: 32px; height: 32px; border: 3px solid #bbf7d0; border-top-color: #16a34a; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .header { background: linear-gradient(135deg, #16a34a, #15803d); color: white; border-radius: 20px; padding: 28px 24px; margin-bottom: 20px; }
+    .badge { display: inline-block; background: rgba(255,255,255,0.2); border-radius: 100px; padding: 3px 10px; font-size: 12px; font-weight: 600; margin-bottom: 10px; text-transform: capitalize; }
+    .header h1 { font-size: 26px; font-weight: 800; margin-bottom: 4px; line-height: 1.2; }
+    .header .sub { font-size: 14px; opacity: 0.85; }
+    .from { text-align: center; color: #6b7280; font-size: 14px; margin-bottom: 20px; }
+    .card { background: white; border-radius: 16px; padding: 20px; margin-bottom: 14px; }
+    .card-title { font-size: 11px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+    .row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid #f3f4f6; font-size: 14px; color: #6b7280; }
+    .row:last-child { border-bottom: none; }
+    .row strong { color: #111827; font-weight: 600; }
+    .notes { font-size: 14px; color: #6b7280; line-height: 1.6; font-style: italic; }
+    .notice { background: #dcfce7; border: 1px solid #86efac; border-radius: 12px; padding: 12px 16px; font-size: 13px; color: #166534; margin-bottom: 14px; line-height: 1.5; }
+    .cta { display: block; background: #16a34a; color: white; text-decoration: none; text-align: center; padding: 18px; border-radius: 16px; font-size: 17px; font-weight: 700; margin-bottom: 12px; }
+    .cta:hover { background: #15803d; }
+    .cta-outline { display: block; background: white; color: #16a34a; text-decoration: none; text-align: center; padding: 15px; border-radius: 16px; font-size: 15px; font-weight: 600; border: 2px solid #16a34a; margin-bottom: 10px; }
+    .hint { text-align: center; font-size: 12px; color: #9ca3af; margin-bottom: 16px; line-height: 1.5; }
+    .footer { text-align: center; font-size: 12px; color: #9ca3af; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <div class="loading">
+      <div class="spinner"></div>
+      <p>Loading seed info&hellip;</p>
+    </div>
+  </div>
+
+  <script>
+    var SUPABASE_URL = 'https://yosipqxkmpdlsxsmhrdc.supabase.co';
+    var SUPABASE_ANON_KEY = 'sb_publishable_Zcn1Sl1Yq9-lWIF48tXzoQ_SlA8OccZ';
+
+    function esc(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function row(label, value) {
+      return '<div class="row"><span>' + esc(label) + '</span><strong>' + esc(value) + '</strong></div>';
+    }
+
+    function showError(msg) {
+      document.getElementById('root').innerHTML =
+        '<div class="wrap">' +
+          '<div class="card" style="text-align:center;margin-top:40px">' +
+            '<p style="font-size:2.5rem;margin-bottom:12px">&#127807;</p>' +
+            '<h2 style="color:#16a34a;margin-bottom:8px">Frø</h2>' +
+            '<p style="color:#6b7280">' + msg + '</p>' +
+          '</div>' +
+        '</div>';
+    }
+
+    function render(share, shareId, claimCount) {
+      var c = share.cultivar_snapshot;
+      var l = share.lot_snapshot;
+      var sharer = share.shared_by_display_name || 'A Frø user';
+      var netGen = share.network_generation || 1;
+      var appLink = 'fro://import?shareId=' + shareId;
+
+      document.title = c.varietyName + ' \u2014 Frø';
+
+      var seedRows =
+        (l.yearHarvested ? row('Harvested', l.yearHarvested) : '') +
+        (l.generation ? row('Generation', 'G' + l.generation) : '') +
+        row('Network generation', 'G' + netGen + ' in Frø') +
+        (l.germinationRatePct != null ? row('Germination rate', l.germinationRatePct + '%') : '') +
+        (l.quantitySeeds ? row('Seeds in packet', l.quantitySeeds) : '');
+
+      var growRows =
+        (c.lifecycle ? row('Type', c.lifecycle) : '') +
+        (c.daysToMaturity ? row('Days to maturity', c.daysToMaturity) : '') +
+        (c.seedViabilityYears ? row('Seed viability', c.seedViabilityYears + ' years') : '');
+
+      var notes = [l.notes, c.notes].filter(Boolean).join(' \u00b7 ');
+
+      var noticeBanner = claimCount > 0
+        ? '<div class="notice">&#127807; ' + claimCount + ' ' + (claimCount === 1 ? 'person has' : 'people have') + ' already received these seeds.</div>'
+        : '';
+
+      document.getElementById('root').innerHTML =
+        '<div class="wrap">' +
+          '<div class="header">' +
+            (c.category ? '<div class="badge">' + esc(c.category) + '</div>' : '') +
+            '<h1>' + esc(c.varietyName) + '</h1>' +
+            '<div class="sub">' + esc(c.commonName) + (c.species ? ' &middot; <em>' + esc(c.species) + '</em>' : '') + '</div>' +
+          '</div>' +
+          '<p class="from">Shared with you by <strong>' + esc(sharer) + '</strong></p>' +
+          noticeBanner +
+          (seedRows ? '<div class="card"><div class="card-title">About these seeds</div>' + seedRows + '</div>' : '') +
+          (growRows ? '<div class="card"><div class="card-title">Growing info</div>' + growRows + '</div>' : '') +
+          (notes ? '<div class="card"><div class="card-title">Notes</div><p class="notes">' + esc(notes) + '</p></div>' : '') +
+          '<a href="' + appLink + '" class="cta">Add to my Frø</a>' +
+          '<p class="hint">Have the app? Tap above to import.<br>New here? Download Frø to start tracking your seeds.</p>' +
+          '<a href="https://play.google.com/store/apps/details?id=com.orjanstoras.fro" class="cta-outline">Get Frø on Android</a>' +
+          '<a href="https://apps.apple.com/app/seedtracker/id0000000000" class="cta-outline">Get Frø on iOS</a>' +
+          '<div class="footer">&#127807; Frø &mdash; Track your seeds from sow to harvest</div>' +
+        '</div>';
+    }
+
+    function load() {
+      var shareId = window.location.pathname.replace(/^\//, '').split('/')[0];
+      if (!shareId) { showError('Share link not found.'); return; }
+
+      var headers = {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+      };
+
+      fetch(SUPABASE_URL + '/rest/v1/seed_shares?id=eq.' + shareId + '&select=*', { headers: headers })
+        .then(function(res) { return res.json(); })
+        .then(function(rows) {
+          if (!rows || rows.length === 0) {
+            showError('This share link is invalid or has expired.');
+            return;
+          }
+          var share = rows[0];
+
+          // Fetch claim count — ignored if the table does not exist yet
+          fetch(
+            SUPABASE_URL + '/rest/v1/seed_share_claims?share_id=eq.' + shareId + '&select=id',
+            { headers: Object.assign({}, headers, { 'Prefer': 'count=exact' }) }
+          )
+            .then(function(cr) {
+              var range = cr.headers.get('content-range') || '';
+              var claimCount = parseInt(range.split('/')[1] || '0', 10) || 0;
+              render(share, shareId, claimCount);
+            })
+            .catch(function() {
+              render(share, shareId, 0);
+            });
+        })
+        .catch(function() {
+          showError('Could not load seed info. Please check your connection.');
+        });
+    }
+
+    load();
+  </script>
+</body>
+</html>
