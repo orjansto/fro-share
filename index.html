@@ -346,12 +346,32 @@
       /* ── Footer ────────────────────────────── */
       .footer {
         display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
-        gap: 8px;
+        gap: 6px;
         margin-top: 36px;
         font-size: 12px;
         color: #9ca3af;
+      }
+
+      .footer-brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .footer-owner {
+        font-size: 11px;
+        color: #d1d5db;
+      }
+
+      .footer-owner a {
+        color: #9ca3af;
+        text-decoration: none;
+      }
+
+      .footer-owner a:hover {
+        text-decoration: underline;
       }
 
       /* ── Loading ───────────────────────────── */
@@ -556,7 +576,9 @@
       }
 
       function logStoreClick(platform) {
-        if (!_currentShareId) return;
+        var storageKey = "fro_store_click_" + platform;
+        if (localStorage.getItem(storageKey)) return;
+        localStorage.setItem(storageKey, "1");
         fetch(SUPABASE_URL + "/rest/v1/app_store_interest_clicks", {
           method: "POST",
           headers: {
@@ -565,7 +587,7 @@
             "Content-Type": "application/json",
             "Prefer": "return=minimal",
           },
-          body: JSON.stringify({ share_id: _currentShareId, platform: platform }),
+          body: JSON.stringify({ platform: platform }),
         }).catch(function() {});
       }
 
@@ -714,8 +736,11 @@
           '</div>' +
 
           '<div class="footer">' +
-            ICON_SPROUT_GRAY +
-            '<span>Fr\u00f8 &mdash; Fra fr\u00f8 til fr\u00f8</span>' +
+            '<div class="footer-brand">' +
+              ICON_SPROUT_GRAY +
+              '<span>Fr\u00f8 &mdash; Fra fr\u00f8 til fr\u00f8</span>' +
+            '</div>' +
+            '<div class="footer-owner">Operated by \u00d8rjan Stor\u00e5s &mdash; <a href="mailto:contact@xn--fr-mka.app">contact@fr\u00f8.app</a></div>' +
           '</div>' +
 
           '</div>';
