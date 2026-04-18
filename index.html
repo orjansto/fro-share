@@ -83,7 +83,6 @@
         overflow: hidden;
       }
 
-      /* Decorative radial glow, top-right */
       .hero::after {
         content: '';
         position: absolute;
@@ -134,7 +133,7 @@
         background: white;
         border-radius: 16px;
         padding: 16px 20px;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
         box-shadow:
           0 1px 2px rgba(0,0,0,0.05),
           0 2px 10px rgba(0,0,0,0.04);
@@ -168,6 +167,23 @@
         font-size: 15px;
         font-weight: 600;
         color: #111827;
+        line-height: 1.3;
+      }
+
+      .sharer-location {
+        font-size: 13px;
+        color: #16a34a;
+        font-weight: 500;
+        margin-top: 2px;
+      }
+
+      /* ── Provenance ────────────────────────── */
+      .provenance {
+        text-align: center;
+        font-size: 12px;
+        color: #9ca3af;
+        margin-bottom: 16px;
+        line-height: 1.5;
       }
 
       /* ── Notice ────────────────────────────── */
@@ -219,7 +235,15 @@
       .row:first-of-type { padding-top: 0; }
       .row:last-child { border-bottom: none; padding-bottom: 0; }
       .row .label { color: #6b7280; }
-      .row .value { color: #111827; font-weight: 600; text-align: right; }
+      .row .value { color: #111827; font-weight: 600; text-align: right; flex-shrink: 0; }
+
+      .viability-note {
+        font-size: 13px;
+        color: #6b7280;
+        line-height: 1.6;
+        padding: 10px 0 4px;
+        font-style: italic;
+      }
 
       .notes {
         font-size: 14px;
@@ -227,6 +251,27 @@
         line-height: 1.75;
         font-style: italic;
       }
+
+      /* ── Expandable growing details ────────── */
+      details.grow-details {
+        margin-top: 10px;
+        border-top: 1px solid #f3f4f6;
+        padding-top: 2px;
+      }
+
+      details.grow-details summary {
+        cursor: pointer;
+        list-style: none;
+        font-size: 13px;
+        font-weight: 600;
+        color: #16a34a;
+        padding: 8px 0 4px;
+        user-select: none;
+      }
+
+      details.grow-details summary::-webkit-details-marker { display: none; }
+      details.grow-details summary::after { content: ' \25BE'; }
+      details.grow-details[open] summary::after { content: ' \25B4'; }
 
       /* ── Actions ───────────────────────────── */
       .actions {
@@ -286,6 +331,8 @@
         font-weight: 600;
         border: 1.5px solid #e5e7eb;
         letter-spacing: -0.01em;
+        cursor: pointer;
+        font-family: inherit;
         transition: border-color 0.15s, color 0.15s;
       }
 
@@ -294,9 +341,7 @@
         color: #16a34a;
       }
 
-      .store-btn svg {
-        flex-shrink: 0;
-      }
+      .store-btn svg { flex-shrink: 0; }
 
       /* ── Footer ────────────────────────────── */
       .footer {
@@ -332,13 +377,67 @@
 
       @keyframes spin { to { transform: rotate(360deg); } }
 
-      /* Fade-in for the rendered content */
       @keyframes fadeUp {
         from { opacity: 0; transform: translateY(12px); }
         to   { opacity: 1; transform: translateY(0); }
       }
 
       .wrap { animation: fadeUp 0.35s ease both; }
+
+      /* ── Store modal ───────────────────────── */
+      .store-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,.5);
+        z-index: 100;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+      }
+
+      .store-modal.open { display: flex; }
+
+      .store-modal-box {
+        background: white;
+        border-radius: 20px;
+        padding: 28px 24px;
+        max-width: 360px;
+        width: 100%;
+        text-align: center;
+      }
+
+      .store-modal-icon { font-size: 36px; margin-bottom: 12px; }
+
+      .store-modal-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 10px;
+      }
+
+      .store-modal-text {
+        font-size: 14px;
+        color: #6b7280;
+        line-height: 1.65;
+        margin-bottom: 20px;
+      }
+
+      .store-modal-btn {
+        background: #16a34a;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 13px 24px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        width: 100%;
+        font-family: inherit;
+        transition: background 0.15s;
+      }
+
+      .store-modal-btn:hover { background: #15803d; }
     </style>
   </head>
   <body>
@@ -346,6 +445,16 @@
       <div class="loading">
         <div class="spinner"></div>
         <p>Loading seed info&hellip;</p>
+      </div>
+    </div>
+
+    <!-- App store interest modal -->
+    <div id="store-modal" class="store-modal" onclick="closeStoreModal(event)">
+      <div class="store-modal-box">
+        <div class="store-modal-icon">🌱</div>
+        <div class="store-modal-title">Coming soon!</div>
+        <p id="store-modal-text" class="store-modal-text"></p>
+        <button class="store-modal-btn" onclick="closeStoreModal()">Got it</button>
       </div>
     </div>
 
@@ -390,6 +499,8 @@
           '<path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.4c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.39-1.32 2.76-2.53 3.99zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>' +
         '</svg>';
 
+      // ─── Helpers ───────────────────────────────────────────────────────────────
+
       function esc(s) {
         return String(s == null ? "" : s)
           .replace(/&/g, "&amp;")
@@ -407,6 +518,10 @@
         );
       }
 
+      function capitalize(s) {
+        return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+      }
+
       function showError(msg) {
         document.getElementById("root").innerHTML =
           '<div class="wrap">' +
@@ -420,7 +535,44 @@
           '</div>';
       }
 
+      // ─── Store modal ───────────────────────────────────────────────────────────
+
+      var _currentShareId = "";
+
+      function showStoreModal(platform) {
+        logStoreClick(platform);
+        var storeName = platform === "ios" ? "App Store" : "Google Play";
+        document.getElementById("store-modal-text").innerHTML =
+          "Fr\u00f8 isn\u2019t on " + storeName + " yet \u2014 but we\u2019re working on it!<br><br>" +
+          "The good news: <strong>this seed will still be here waiting for you.</strong> " +
+          "Once the app is available, just rescan the QR code or reopen this link and the seed will be ready to import.<br><br>" +
+          "We\u2019ve noted your interest \u2014 thank you for your patience!";
+        document.getElementById("store-modal").classList.add("open");
+      }
+
+      function closeStoreModal(e) {
+        if (e && e.target !== document.getElementById("store-modal")) return;
+        document.getElementById("store-modal").classList.remove("open");
+      }
+
+      function logStoreClick(platform) {
+        if (!_currentShareId) return;
+        fetch(SUPABASE_URL + "/rest/v1/app_store_interest_clicks", {
+          method: "POST",
+          headers: {
+            "apikey": SUPABASE_ANON_KEY,
+            "Authorization": "Bearer " + SUPABASE_ANON_KEY,
+            "Content-Type": "application/json",
+            "Prefer": "return=minimal",
+          },
+          body: JSON.stringify({ share_id: _currentShareId, platform: platform }),
+        }).catch(function() {});
+      }
+
+      // ─── Render ────────────────────────────────────────────────────────────────
+
       function render(share, shareId, claimCount) {
+        _currentShareId = shareId;
         var c = share.cultivar_snapshot;
         var l = share.lot_snapshot;
         var sharer = share.shared_by_display_name || "A Fr\u00f8 user";
@@ -430,21 +582,69 @@
 
         document.title = c.varietyName + " \u2014 Fr\u00f8";
 
+        // Community provenance (only for seeds that have been passed on before)
+        var provenanceNote = netGen > 1
+          ? '<p class="provenance">Community seed \u2014 grown and passed on ' +
+            (netGen - 1) + ' time' + (netGen - 1 !== 1 ? 's' : '') +
+            ' in Fr\u00f8 before reaching you.</p>'
+          : '';
+
+        // "About these seeds" — generation rows removed (were confusing)
         var seedRows =
           (l.yearHarvested ? row("Harvested", l.yearHarvested) : "") +
-          (l.generation ? row("Generation", "G" + l.generation) : "") +
-          row("Network generation", "G" + netGen + " in Fr\u00f8") +
-          (l.germinationRatePct != null
-            ? row("Germination rate", l.germinationRatePct + "%")
-            : "") +
+          (l.source ? row("Source", l.source) : "") +
+          (l.germinationRatePct != null ? row("Germination rate", l.germinationRatePct + "%") : "") +
           (l.quantitySeeds ? row("Seeds in packet", l.quantitySeeds) : "");
 
-        var growRows =
-          (c.lifecycle ? row("Type", c.lifecycle) : "") +
-          (c.daysToMaturity ? row("Days to maturity", c.daysToMaturity) : "") +
-          (c.seedViabilityYears
-            ? row("Seed viability", c.seedViabilityYears + " years")
+        // "Growing info" — always-visible basics
+        var growBasic =
+          (c.lifecycle ? row("Type", capitalize(c.lifecycle)) : "") +
+          (c.daysToMaturity ? row("Days to maturity", c.daysToMaturity + " days") : "") +
+          (c.directSow != null ? row("Direct sow", c.directSow ? "Yes" : "Prefer indoor start") : "");
+
+        // Viability — phrased as typical, not guaranteed
+        var viabilityHtml = c.seedViabilityYears
+          ? '<p class="viability-note">Well-stored ' + esc(c.commonName) +
+            ' seeds are typically viable for up to ' + c.seedViabilityYears +
+            ' years. Actual viability depends on storage conditions.</p>'
+          : "";
+
+        // Expandable "More growing info"
+        var germinationDays = null;
+        if (c.germinationDaysMin != null && c.germinationDaysMax != null) {
+          germinationDays = c.germinationDaysMin + "\u2013" + c.germinationDaysMax + " days";
+        } else if (c.germinationDaysMax != null) {
+          germinationDays = "Up to " + c.germinationDaysMax + " days";
+        }
+
+        var germinationTemp = null;
+        if (c.sproutTempMinC != null && c.sproutTempMaxC != null) {
+          germinationTemp = c.sproutTempMinC + "\u2013" + c.sproutTempMaxC + "\u00b0C";
+        } else if (c.sproutTempMinC != null) {
+          germinationTemp = "Min " + c.sproutTempMinC + "\u00b0C";
+        }
+
+        var spacingStr = c.spacingCm
+          ? c.spacingCm + " cm" + (c.rowSpacingCm ? ", rows " + c.rowSpacingCm + " cm apart" : "")
+          : null;
+
+        var growExtra =
+          (c.sowDepthCm != null ? row("Sow depth", c.sowDepthCm + " cm") : "") +
+          (germinationDays ? row("Germination time", germinationDays) : "") +
+          (germinationTemp ? row("Germination temp", germinationTemp) : "") +
+          (spacingStr ? row("Spacing", spacingStr) : "") +
+          (c.sowWeeksBeforeLastFrost != null
+            ? row("Start indoors", c.sowWeeksBeforeLastFrost + " wks before last frost")
             : "");
+
+        var expandSection = growExtra
+          ? '<details class="grow-details"><summary>More growing info</summary>' + growExtra + '</details>'
+          : "";
+
+        var growSection = (growBasic || viabilityHtml || expandSection)
+          ? '<div class="card"><div class="card-title">Growing info</div>' +
+            growBasic + viabilityHtml + expandSection + '</div>'
+          : "";
 
         var notes = [l.notes, c.notes].filter(Boolean).join(" \u00b7 ");
 
@@ -455,7 +655,7 @@
               (claimCount === 1 ? 'person has' : 'people have') +
               ' already received these seeds.</span>' +
             '</div>'
-          : '';
+          : "";
 
         document.getElementById("root").innerHTML =
           '<div class="wrap">' +
@@ -480,18 +680,18 @@
             '<div>' +
               '<div class="sharer-label">Shared by</div>' +
               '<div class="sharer-name">' + esc(sharer) + '</div>' +
+              (l.sharerCity ? '<div class="sharer-location">\uD83C\uDF31 Grown in ' + esc(l.sharerCity) + '</div>' : '') +
             '</div>' +
           '</div>' +
 
+          provenanceNote +
           noticeBanner +
 
           (seedRows
             ? '<div class="card"><div class="card-title">About these seeds</div>' + seedRows + '</div>'
             : '') +
 
-          (growRows
-            ? '<div class="card"><div class="card-title">Growing info</div>' + growRows + '</div>'
-            : '') +
+          growSection +
 
           (notes
             ? '<div class="card"><div class="card-title">Notes</div><p class="notes">' + esc(notes) + '</p></div>'
@@ -504,12 +704,12 @@
             '</a>' +
             '<p class="hint">Already have Fr\u00f8? Tap above to import directly.<br>New here? Download the app to start tracking your seeds.</p>' +
             '<div class="store-buttons">' +
-              '<a href="https://play.google.com/store/apps/details?id=com.orjanstoras.fro" class="store-btn">' +
+              '<button onclick="showStoreModal(\'android\')" class="store-btn">' +
                 ICON_ANDROID + 'Google Play' +
-              '</a>' +
-              '<a href="https://apps.apple.com/app/fro/id0000000000" class="store-btn">' +
+              '</button>' +
+              '<button onclick="showStoreModal(\'ios\')" class="store-btn">' +
                 ICON_APPLE + 'App Store' +
-              '</a>' +
+              '</button>' +
             '</div>' +
           '</div>' +
 
@@ -520,6 +720,8 @@
 
           '</div>';
       }
+
+      // ─── Load ──────────────────────────────────────────────────────────────────
 
       function load() {
         var shareId = window.location.pathname.replace(/^\//, "").split("/")[0];
@@ -546,10 +748,7 @@
             var share = rows[0];
 
             fetch(
-              SUPABASE_URL +
-                "/rest/v1/seed_share_claims?share_id=eq." +
-                shareId +
-                "&select=id",
+              SUPABASE_URL + "/rest/v1/seed_share_claims?share_id=eq." + shareId + "&select=id",
               { headers: Object.assign({}, headers, { Prefer: "count=exact" }) }
             )
               .then(function(cr) {
