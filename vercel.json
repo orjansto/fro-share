@@ -1,3 +1,6 @@
 {
-  "rewrites": [{ "source": "/:shareId", "destination": "/index.html" }]
+  "rewrites": [
+    { "source": "/privacy", "destination": "/privacy.html" },
+    { "source": "/:shareId", "destination": "/index.html" }
+  ]
 }
