@@ -1,808 +1,311 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Frø</title>
-    <style>
-      *, *::before, *::after {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frø — Track your seeds, grow your network</title>
+  <meta name="description" content="Track your plant collection from seed to harvest. Share seeds with other growers via QR codes." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-        background: #fdf8ec;
-        color: #1a1a18;
-        min-height: 100vh;
-        -webkit-font-smoothing: antialiased;
-      }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #fdf8ec;
+      color: #1f2937;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
 
-      /* Thin green accent line at very top */
-      body::before {
-        content: '';
-        display: block;
-        height: 3px;
-        background: linear-gradient(90deg, #1a3820 0%, #4a7838 40%, #8fb870 100%);
-      }
+    body::before {
+      content: '';
+      display: block;
+      height: 3px;
+      background: linear-gradient(90deg, #1a3820 0%, #4a7838 40%, #8fb870 100%);
+    }
 
-      .wrap {
-        max-width: 440px;
-        margin: 0 auto;
-        padding: 40px 16px 64px;
-      }
+    .container {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
 
-      /* ── Brand ─────────────────────────────── */
-      .brand {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        margin-bottom: 36px;
-      }
+    /* ── Header ───────────────────────────────── */
+    header {
+      padding: 48px 0 56px;
+      text-align: center;
+    }
 
-      .app-icon {
-        width: 76px;
-        height: 76px;
-        background: #e8f0d8;
-        border-radius: 22px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 14px;
-        box-shadow:
-          0 4px 16px rgba(26, 56, 32, 0.14),
-          0 1px 4px rgba(26, 56, 32, 0.08);
-      }
+    .app-icon {
+      width: 88px;
+      height: 88px;
+      background: #e8f0d8;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      box-shadow:
+        0 4px 20px rgba(26, 56, 32, 0.16),
+        0 1px 4px rgba(26, 56, 32, 0.08);
+    }
 
-      .app-name {
-        font-size: 36px;
-        font-weight: 800;
-        color: #1a3820;
-        letter-spacing: -0.04em;
-        line-height: 1;
-      }
+    h1 {
+      font-size: 52px;
+      font-weight: 800;
+      color: #1a3820;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
 
-      .app-tagline {
-        font-size: 13px;
-        color: #9ca3af;
-        margin-top: 6px;
-        letter-spacing: 0.01em;
-      }
+    .tagline {
+      font-size: 18px;
+      color: #4b5563;
+      max-width: 360px;
+      margin: 0 auto 32px;
+      line-height: 1.5;
+    }
 
-      /* ── Hero card ─────────────────────────── */
-      .hero {
-        background: white;
-        border-radius: 20px;
-        padding: 24px 24px 22px;
-        margin-bottom: 12px;
-        box-shadow:
-          0 1px 2px rgba(0,0,0,0.06),
-          0 6px 24px rgba(0,0,0,0.05);
-        position: relative;
-        overflow: hidden;
-      }
+    /* ── App Store buttons ────────────────────── */
+    .store-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
 
-      .hero::after {
-        content: '';
-        position: absolute;
-        top: -50px;
-        right: -50px;
-        width: 160px;
-        height: 160px;
-        background: radial-gradient(circle, #d4e9c2 0%, transparent 70%);
-        pointer-events: none;
-      }
+    .store-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: #1a3820;
+      color: white;
+      text-decoration: none;
+      padding: 13px 22px;
+      border-radius: 13px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      transition: background 0.15s, box-shadow 0.15s;
+      box-shadow: 0 2px 12px rgba(26, 56, 32, 0.28);
+    }
 
-      .category-badge {
-        display: inline-flex;
-        align-items: center;
-        background: #e8f0d8;
-        border: 1px solid #d4e9c2;
-        color: #1a3820;
-        border-radius: 100px;
-        padding: 4px 12px;
-        font-size: 12px;
-        font-weight: 600;
-        text-transform: capitalize;
-        letter-spacing: 0.02em;
-        margin-bottom: 14px;
-      }
+    .store-btn:hover {
+      background: #16301a;
+      box-shadow: 0 4px 20px rgba(26, 56, 32, 0.38);
+    }
 
-      .variety-name {
-        font-size: 30px;
-        font-weight: 800;
-        color: #111827;
-        line-height: 1.15;
-        letter-spacing: -0.025em;
-        margin-bottom: 7px;
-        position: relative;
-      }
+    .store-btn-label {
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+    }
 
-      .common-name {
-        font-size: 15px;
-        color: #6b7280;
-        line-height: 1.5;
-      }
+    .store-btn-sub {
+      font-size: 10px;
+      font-weight: 400;
+      opacity: 0.75;
+      letter-spacing: 0;
+    }
 
-      /* ── Sharer ────────────────────────────── */
-      .sharer {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-        background: white;
-        border-radius: 16px;
-        padding: 16px 20px;
-        margin-bottom: 10px;
-        box-shadow:
-          0 1px 2px rgba(0,0,0,0.05),
-          0 2px 10px rgba(0,0,0,0.04);
-      }
+    .store-btn-name {
+      font-size: 15px;
+      font-weight: 700;
+    }
 
-      .sharer-avatar {
-        width: 46px;
-        height: 46px;
-        background: linear-gradient(135deg, #e8f0d8, #d4e9c2);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        font-size: 19px;
-        font-weight: 700;
-        color: #1a3820;
-        border: 2px solid #e8f0d8;
-      }
+    /* ── Features ─────────────────────────────── */
+    .features {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin: 56px 0;
+    }
 
-      .sharer-label {
-        font-size: 11px;
-        font-weight: 700;
-        color: #9ca3af;
-        text-transform: uppercase;
-        letter-spacing: 0.07em;
-        margin-bottom: 3px;
-      }
+    @media (min-width: 520px) {
+      .features { grid-template-columns: 1fr 1fr 1fr; }
+    }
 
-      .sharer-name {
-        font-size: 15px;
-        font-weight: 600;
-        color: #111827;
-        line-height: 1.3;
-      }
+    .feature {
+      background: white;
+      border-radius: 18px;
+      padding: 24px 20px;
+      box-shadow:
+        0 1px 2px rgba(0,0,0,0.05),
+        0 4px 16px rgba(0,0,0,0.05);
+    }
 
-      .sharer-location {
-        font-size: 13px;
-        color: #1a3820;
-        font-weight: 500;
-        margin-top: 2px;
-      }
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      background: #e8f0d8;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
 
-      /* ── Provenance ────────────────────────── */
-      .provenance {
-        text-align: center;
-        font-size: 12px;
-        color: #9ca3af;
-        margin-bottom: 16px;
-        line-height: 1.5;
-      }
+    .feature h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
 
-      /* ── Notice ────────────────────────────── */
-      .notice {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        background: #e8f0d8;
-        border: 1px solid #d4e9c2;
-        border-radius: 14px;
-        padding: 14px 16px;
-        font-size: 13.5px;
-        color: #1a3820;
-        margin-bottom: 16px;
-        line-height: 1.5;
-        font-weight: 500;
-      }
+    .feature p {
+      font-size: 14px;
+      color: #6b7280;
+      line-height: 1.6;
+    }
 
-      /* ── Info cards ────────────────────────── */
-      .card {
-        background: white;
-        border-radius: 16px;
-        padding: 20px;
-        margin-bottom: 12px;
-        box-shadow:
-          0 1px 2px rgba(0,0,0,0.05),
-          0 2px 10px rgba(0,0,0,0.04);
-      }
+    /* ── Footer ───────────────────────────────── */
+    footer {
+      border-top: 1px solid #e5e7eb;
+      padding: 28px 0 48px;
+      text-align: center;
+    }
 
-      .card-title {
-        font-size: 11px;
-        font-weight: 700;
-        color: #9ca3af;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        margin-bottom: 14px;
-      }
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
 
-      .row {
-        display: flex;
-        justify-content: space-between;
-        align-items: baseline;
-        gap: 16px;
-        padding: 9px 0;
-        border-bottom: 1px solid #f3f4f6;
-        font-size: 14px;
-      }
+    .footer-logo {
+      width: 26px;
+      height: 26px;
+      background: #e8f0d8;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-      .row:first-of-type { padding-top: 0; }
-      .row:last-child { border-bottom: none; padding-bottom: 0; }
-      .row .label { color: #6b7280; }
-      .row .value { color: #111827; font-weight: 600; text-align: right; flex-shrink: 0; }
+    .footer-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1a3820;
+      letter-spacing: -0.02em;
+    }
 
-      .viability-note {
-        font-size: 13px;
-        color: #6b7280;
-        line-height: 1.6;
-        padding: 10px 0 4px;
-        font-style: italic;
-      }
+    .footer-links {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      font-size: 13px;
+    }
 
-      .notes {
-        font-size: 14px;
-        color: #6b7280;
-        line-height: 1.75;
-        font-style: italic;
-      }
+    .footer-links a {
+      color: #6b7280;
+      text-decoration: none;
+    }
 
-      /* ── Expandable growing details ────────── */
-      details.grow-details {
-        margin-top: 10px;
-        border-top: 1px solid #f3f4f6;
-        padding-top: 2px;
-      }
+    .footer-links a:hover {
+      color: #1a3820;
+      text-decoration: underline;
+    }
 
-      details.grow-details summary {
-        cursor: pointer;
-        list-style: none;
-        font-size: 13px;
-        font-weight: 600;
-        color: #1a3820;
-        padding: 8px 0 4px;
-        user-select: none;
-      }
+    .footer-copy {
+      font-size: 12px;
+      color: #d1d5db;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
 
-      details.grow-details summary::-webkit-details-marker { display: none; }
-      details.grow-details summary::after { content: ' \25BE'; }
-      details.grow-details[open] summary::after { content: ' \25B4'; }
+  <div class="container">
 
-      /* ── Actions ───────────────────────────── */
-      .actions {
-        margin-top: 24px;
-      }
+    <header>
+      <div class="app-icon">
+        <svg width="52" height="52" viewBox="0 0 64 64" fill="none">
+          <ellipse cx="32" cy="38" rx="13" ry="17" fill="#d4e9c2" transform="rotate(8 32 38)"/>
+          <path d="M14,52 C19,45 26,40 32,37 C38,34 39,22 34,10" stroke="#1a3820" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M36,14 C33,10 26,11 27,15 C28,18 34,17 36,14Z" fill="#1a3820"/>
+          <path d="M36,14 C39,10 46,11 45,15 C44,18 38,17 36,14Z" fill="#1a3820"/>
+        </svg>
+      </div>
 
-      .cta {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        background: #1a3820;
-        color: white;
-        text-decoration: none;
-        padding: 19px 24px;
-        border-radius: 16px;
-        font-size: 17px;
-        font-weight: 700;
-        margin-bottom: 12px;
-        letter-spacing: -0.01em;
-        box-shadow:
-          0 4px 20px rgba(26, 56, 32, 0.32),
-          0 1px 4px rgba(26, 56, 32, 0.2);
-        transition: background 0.15s, box-shadow 0.15s;
-      }
+      <h1>Frø</h1>
+      <p class="tagline">Track your plant collection from seed to harvest. Share seeds with other growers.</p>
 
-      .cta:hover {
-        background: #16301a;
-        box-shadow: 0 6px 28px rgba(26, 56, 32, 0.42);
-      }
+      <div class="store-buttons">
+        <a href="https://apps.apple.com/app/fr%C3%B8/id6747700634" class="store-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          <span class="store-btn-label">
+            <span class="store-btn-sub">Download on the</span>
+            <span class="store-btn-name">App Store</span>
+          </span>
+        </a>
+      </div>
+    </header>
 
-      .hint {
-        text-align: center;
-        font-size: 13px;
-        color: #9ca3af;
-        margin-bottom: 20px;
-        line-height: 1.65;
-      }
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a3820" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"/>
+            <path d="M12 6v6l4 2"/>
+          </svg>
+        </div>
+        <h2>Collect</h2>
+        <p>Catalogue seeds, bulbs, cuttings, and grafted trees. Track quantities, harvest years, and germination rates.</p>
+      </div>
 
-      .store-buttons {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-      }
+      <div class="feature">
+        <div class="feature-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a3820" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22V12"/>
+            <path d="M12 12C12 12 8 9 8 6a4 4 0 0 1 8 0c0 3-4 6-4 6z"/>
+            <path d="M12 12c0 0-4 1-6 4"/>
+            <path d="M12 12c0 0 4 1 6 4"/>
+          </svg>
+        </div>
+        <h2>Grow</h2>
+        <p>Log sowing, germination, and harvest events. Get timely reminders when varieties enter their sow window.</p>
+      </div>
 
-      .store-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        background: white;
-        color: #374151;
-        text-decoration: none;
-        padding: 14px 12px;
-        border-radius: 13px;
-        font-size: 13.5px;
-        font-weight: 600;
-        border: 1.5px solid #e5e7eb;
-        letter-spacing: -0.01em;
-        cursor: pointer;
-        font-family: inherit;
-        transition: border-color 0.15s, color 0.15s;
-      }
-
-      .store-btn:hover {
-        border-color: #1a3820;
-        color: #1a3820;
-      }
-
-      .store-btn svg { flex-shrink: 0; }
-
-      /* ── Footer ────────────────────────────── */
-      .footer {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 6px;
-        margin-top: 36px;
-        font-size: 12px;
-        color: #9ca3af;
-      }
-
-      .footer-brand {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .footer-owner {
-        font-size: 11px;
-        color: #d1d5db;
-      }
-
-      .footer-owner a {
-        color: #9ca3af;
-        text-decoration: none;
-      }
-
-      .footer-owner a:hover {
-        text-decoration: underline;
-      }
-
-      /* ── Loading ───────────────────────────── */
-      .loading {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        gap: 16px;
-        color: #9ca3af;
-        font-size: 14px;
-      }
-
-      .spinner {
-        width: 34px;
-        height: 34px;
-        border: 2.5px solid #d4e9c2;
-        border-top-color: #1a3820;
-        border-radius: 50%;
-        animation: spin 0.75s linear infinite;
-      }
-
-      @keyframes spin { to { transform: rotate(360deg); } }
-
-      @keyframes fadeUp {
-        from { opacity: 0; transform: translateY(12px); }
-        to   { opacity: 1; transform: translateY(0); }
-      }
-
-      .wrap { animation: fadeUp 0.35s ease both; }
-
-      /* ── Store modal ───────────────────────── */
-      .store-modal {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,.5);
-        z-index: 100;
-        align-items: center;
-        justify-content: center;
-        padding: 24px;
-      }
-
-      .store-modal.open { display: flex; }
-
-      .store-modal-box {
-        background: white;
-        border-radius: 20px;
-        padding: 28px 24px;
-        max-width: 360px;
-        width: 100%;
-        text-align: center;
-      }
-
-      .store-modal-icon { font-size: 36px; margin-bottom: 12px; }
-
-      .store-modal-title {
-        font-size: 18px;
-        font-weight: 700;
-        color: #111827;
-        margin-bottom: 10px;
-      }
-
-      .store-modal-text {
-        font-size: 14px;
-        color: #6b7280;
-        line-height: 1.65;
-        margin-bottom: 20px;
-      }
-
-      .store-modal-btn {
-        background: #1a3820;
-        color: white;
-        border: none;
-        border-radius: 12px;
-        padding: 13px 24px;
-        font-size: 15px;
-        font-weight: 600;
-        cursor: pointer;
-        width: 100%;
-        font-family: inherit;
-        transition: background 0.15s;
-      }
-
-      .store-modal-btn:hover { background: #16301a; }
-    </style>
-  </head>
-  <body>
-    <div id="root">
-      <div class="loading">
-        <div class="spinner"></div>
-        <p>Loading seed info&hellip;</p>
+      <div class="feature">
+        <div class="feature-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1a3820" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"/>
+            <circle cx="6" cy="12" r="3"/>
+            <circle cx="18" cy="19" r="3"/>
+            <path d="M8.59 13.51l6.83 3.98M15.41 6.51l-6.82 3.98"/>
+          </svg>
+        </div>
+        <h2>Share</h2>
+        <p>Generate QR codes to share seeds with other growers. Recipients import directly into their own collection.</p>
       </div>
     </div>
 
-    <!-- App store interest modal -->
-    <div id="store-modal" class="store-modal" onclick="closeStoreModal(event)">
-      <div class="store-modal-box">
-        <div class="store-modal-icon">🌱</div>
-        <div class="store-modal-title">Coming soon!</div>
-        <p id="store-modal-text" class="store-modal-text"></p>
-        <button class="store-modal-btn" onclick="closeStoreModal()">Got it</button>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-brand">
+        <div class="footer-logo">
+          <svg width="16" height="16" viewBox="0 0 64 64" fill="none">
+            <ellipse cx="32" cy="38" rx="13" ry="17" fill="#d4e9c2" transform="rotate(8 32 38)"/>
+            <path d="M14,52 C19,45 26,40 32,37 C38,34 39,22 34,10" stroke="#1a3820" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M36,14 C33,10 26,11 27,15 C28,18 34,17 36,14Z" fill="#1a3820"/>
+            <path d="M36,14 C39,10 46,11 45,15 C44,18 38,17 36,14Z" fill="#1a3820"/>
+          </svg>
+        </div>
+        <span class="footer-name">Frø</span>
       </div>
+      <div class="footer-links">
+        <a href="/privacy">Privacy Policy</a>
+        <a href="mailto:contact@xn--fr-mka.app">contact@frø.app</a>
+      </div>
+      <p class="footer-copy">Developed by Ørjan Storås</p>
     </div>
+  </footer>
 
-    <script>
-      var SUPABASE_URL = "https://yosipqxkmpdlsxsmhrdc.supabase.co";
-      var SUPABASE_ANON_KEY = "sb_publishable_Zcn1Sl1Yq9-lWIF48tXzoQ_SlA8OccZ";
-
-      // Frø logo mark — seed oval + curved sprout + two leaves
-      // App-icon version: dark green mark on sage background (4A Theme 3)
-      var ICON_LOGO_APP =
-        '<svg width="48" height="48" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-          '<ellipse cx="32" cy="38" rx="13" ry="17" fill="#d4e9c2" transform="rotate(8 32 38)"/>' +
-          '<path d="M14,52 C19,45 26,40 32,37 C38,34 39,22 34,10" stroke="#1a3820" stroke-width="2.2" stroke-linecap="round"/>' +
-          '<path d="M36,14 C33,10 26,11 27,15 C28,18 34,17 36,14Z" fill="#1a3820"/>' +
-          '<path d="M36,14 C39,10 46,11 45,15 C44,18 38,17 36,14Z" fill="#1a3820"/>' +
-        '</svg>';
-
-      // White version: for use on dark green backgrounds (CTA button)
-      var ICON_SPROUT_WHITE =
-        '<svg width="20" height="20" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-          '<ellipse cx="32" cy="38" rx="13" ry="17" fill="rgba(255,255,255,0.25)" transform="rotate(8 32 38)"/>' +
-          '<path d="M14,52 C19,45 26,40 32,37 C38,34 39,22 34,10" stroke="white" stroke-width="2.2" stroke-linecap="round"/>' +
-          '<path d="M36,14 C33,10 26,11 27,15 C28,18 34,17 36,14Z" fill="white"/>' +
-          '<path d="M36,14 C39,10 46,11 45,15 C44,18 38,17 36,14Z" fill="white"/>' +
-        '</svg>';
-
-      // Green version: for use on light/sage backgrounds
-      var ICON_SPROUT_GREEN =
-        '<svg width="18" height="18" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-          '<ellipse cx="32" cy="38" rx="13" ry="17" fill="#d4e9c2" transform="rotate(8 32 38)"/>' +
-          '<path d="M14,52 C19,45 26,40 32,37 C38,34 39,22 34,10" stroke="#1a3820" stroke-width="2.2" stroke-linecap="round"/>' +
-          '<path d="M36,14 C33,10 26,11 27,15 C28,18 34,17 36,14Z" fill="#1a3820"/>' +
-          '<path d="M36,14 C39,10 46,11 45,15 C44,18 38,17 36,14Z" fill="#1a3820"/>' +
-        '</svg>';
-
-      // Gray version: for footer
-      var ICON_SPROUT_GRAY =
-        '<svg width="15" height="15" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">' +
-          '<ellipse cx="32" cy="38" rx="13" ry="17" fill="#e5e7eb" transform="rotate(8 32 38)"/>' +
-          '<path d="M14,52 C19,45 26,40 32,37 C38,34 39,22 34,10" stroke="#9ca3af" stroke-width="2.2" stroke-linecap="round"/>' +
-          '<path d="M36,14 C33,10 26,11 27,15 C28,18 34,17 36,14Z" fill="#9ca3af"/>' +
-          '<path d="M36,14 C39,10 46,11 45,15 C44,18 38,17 36,14Z" fill="#9ca3af"/>' +
-        '</svg>';
-
-      var ICON_ANDROID =
-        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' +
-          '<path d="M4 13a8 8 0 0 1 8-8 8 8 0 0 1 8 8v7H4z"/>' +
-          '<path d="M8 21v1M16 21v1M7 5.5 5 3M17 5.5l2-2.5"/>' +
-          '<circle cx="9.5" cy="11" r="0.5" fill="currentColor"/>' +
-          '<circle cx="14.5" cy="11" r="0.5" fill="currentColor"/>' +
-        '</svg>';
-
-      var ICON_APPLE =
-        '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">' +
-          '<path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.4c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.39-1.32 2.76-2.53 3.99zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>' +
-        '</svg>';
-
-      // ─── Helpers ───────────────────────────────────────────────────────────────
-
-      function esc(s) {
-        return String(s == null ? "" : s)
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;");
-      }
-
-      function row(label, value) {
-        return (
-          '<div class="row">' +
-          '<span class="label">' + esc(label) + '</span>' +
-          '<span class="value">' + esc(value) + '</span>' +
-          '</div>'
-        );
-      }
-
-      function capitalize(s) {
-        return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
-      }
-
-      function showError(msg) {
-        document.getElementById("root").innerHTML =
-          '<div class="wrap">' +
-            '<div class="brand">' +
-              '<div class="app-icon">' + ICON_LOGO_APP + '</div>' +
-              '<div class="app-name">Fr\u00f8</div>' +
-            '</div>' +
-            '<div class="card" style="text-align:center;padding:36px 20px;">' +
-              '<p style="color:#6b7280;font-size:15px;line-height:1.65;">' + esc(msg) + '</p>' +
-            '</div>' +
-          '</div>';
-      }
-
-      // ─── Store modal ───────────────────────────────────────────────────────────
-
-      var _currentShareId = "";
-
-      function showStoreModal(platform) {
-        logStoreClick(platform);
-        var storeName = platform === "ios" ? "App Store" : "Google Play";
-        document.getElementById("store-modal-text").innerHTML =
-          "Fr\u00f8 isn\u2019t on " + storeName + " yet \u2014 but we\u2019re working on it!<br><br>" +
-          "The good news: <strong>this seed will still be here waiting for you.</strong> " +
-          "Once the app is available, just rescan the QR code or reopen this link and the seed will be ready to import.<br><br>" +
-          "We\u2019ve noted your interest \u2014 thank you for your patience!";
-        document.getElementById("store-modal").classList.add("open");
-      }
-
-      function closeStoreModal(e) {
-        if (e && e.target !== document.getElementById("store-modal")) return;
-        document.getElementById("store-modal").classList.remove("open");
-      }
-
-      function logStoreClick(platform) {
-        var storageKey = "fro_store_click_" + platform;
-        if (localStorage.getItem(storageKey)) return;
-        localStorage.setItem(storageKey, "1");
-        fetch(SUPABASE_URL + "/rest/v1/app_store_interest_clicks", {
-          method: "POST",
-          headers: {
-            "apikey": SUPABASE_ANON_KEY,
-            "Authorization": "Bearer " + SUPABASE_ANON_KEY,
-            "Content-Type": "application/json",
-            "Prefer": "return=minimal",
-          },
-          body: JSON.stringify({ platform: platform }),
-        }).catch(function() {});
-      }
-
-      // ─── Render ────────────────────────────────────────────────────────────────
-
-      function render(share, shareId, claimCount) {
-        _currentShareId = shareId;
-        var c = share.cultivar_snapshot;
-        var l = share.lot_snapshot;
-        var sharer = share.shared_by_display_name || "A Fr\u00f8 user";
-        var netGen = share.network_generation || 1;
-        var appLink = "fro://import?shareId=" + shareId;
-        var avatarLetter = sharer.charAt(0).toUpperCase();
-
-        document.title = c.varietyName + " \u2014 Fr\u00f8";
-
-        // Community provenance (only for seeds that have been passed on before)
-        var provenanceNote = netGen > 1
-          ? '<p class="provenance">Community seed \u2014 grown and passed on ' +
-            (netGen - 1) + ' time' + (netGen - 1 !== 1 ? 's' : '') +
-            ' in Fr\u00f8 before reaching you.</p>'
-          : '';
-
-        // "About these seeds" — generation rows removed (were confusing)
-        var seedRows =
-          (l.yearHarvested ? row("Harvested", l.yearHarvested) : "") +
-          (l.source ? row("Source", l.source) : "") +
-          (l.accessionNumber ? row("Accession \u0023", l.accessionNumber) : "") +
-          (l.germinationRatePct != null ? row("Germination rate", l.germinationRatePct + "%") : "") +
-          (l.quantitySeeds ? row("Seeds in packet", l.quantitySeeds) : "");
-
-        // "Growing info" — always-visible basics
-        var growBasic =
-          (c.lifecycle ? row("Type", capitalize(c.lifecycle)) : "") +
-          (c.daysToMaturity ? row("Days to maturity", c.daysToMaturity + " days") : "") +
-          (c.directSow != null ? row("Direct sow", c.directSow ? "Yes" : "Prefer indoor start") : "");
-
-        // Viability — phrased as typical, not guaranteed
-        var viabilityHtml = c.seedViabilityYears
-          ? '<p class="viability-note">Well-stored ' + esc(c.commonName) +
-            ' seeds are typically viable for up to ' + c.seedViabilityYears +
-            ' years. Actual viability depends on storage conditions.</p>'
-          : "";
-
-        // Expandable "More growing info"
-        var germinationDays = null;
-        if (c.germinationDaysMin != null && c.germinationDaysMax != null) {
-          germinationDays = c.germinationDaysMin + "\u2013" + c.germinationDaysMax + " days";
-        } else if (c.germinationDaysMax != null) {
-          germinationDays = "Up to " + c.germinationDaysMax + " days";
-        }
-
-        var germinationTemp = null;
-        if (c.sproutTempMinC != null && c.sproutTempMaxC != null) {
-          germinationTemp = c.sproutTempMinC + "\u2013" + c.sproutTempMaxC + "\u00b0C";
-        } else if (c.sproutTempMinC != null) {
-          germinationTemp = "Min " + c.sproutTempMinC + "\u00b0C";
-        }
-
-        var spacingStr = c.spacingCm
-          ? c.spacingCm + " cm" + (c.rowSpacingCm ? ", rows " + c.rowSpacingCm + " cm apart" : "")
-          : null;
-
-        var growExtra =
-          (c.sowDepthCm != null ? row("Sow depth", c.sowDepthCm + " cm") : "") +
-          (germinationDays ? row("Germination time", germinationDays) : "") +
-          (germinationTemp ? row("Germination temp", germinationTemp) : "") +
-          (spacingStr ? row("Spacing", spacingStr) : "") +
-          (c.sowWeeksBeforeLastFrost != null
-            ? row("Start indoors", c.sowWeeksBeforeLastFrost + " wks before last frost")
-            : "");
-
-        var expandSection = growExtra
-          ? '<details class="grow-details"><summary>More growing info</summary>' + growExtra + '</details>'
-          : "";
-
-        var growSection = (growBasic || viabilityHtml || expandSection)
-          ? '<div class="card"><div class="card-title">Growing info</div>' +
-            growBasic + viabilityHtml + expandSection + '</div>'
-          : "";
-
-        var notes = [l.notes, c.notes].filter(Boolean).join(" \u00b7 ");
-
-        var noticeBanner = claimCount > 0
-          ? '<div class="notice">' +
-              ICON_SPROUT_GREEN +
-              '<span>' + claimCount + ' ' +
-              (claimCount === 1 ? 'person has' : 'people have') +
-              ' already received these seeds.</span>' +
-            '</div>'
-          : "";
-
-        document.getElementById("root").innerHTML =
-          '<div class="wrap">' +
-
-          '<div class="brand">' +
-            '<div class="app-icon">' + ICON_LOGO_APP + '</div>' +
-            '<div class="app-name">Fr\u00f8</div>' +
-            '<div class="app-tagline">Fra fr\u00f8 til fr\u00f8</div>' +
-          '</div>' +
-
-          '<div class="hero">' +
-            (c.category ? '<div class="category-badge">' + esc(c.category) + '</div>' : '') +
-            '<div class="variety-name">' + esc(c.varietyName) + '</div>' +
-            '<div class="common-name">' +
-              esc(c.commonName) +
-              (c.species ? ' &middot; <em>' + esc(c.species) + '</em>' : '') +
-            '</div>' +
-          '</div>' +
-
-          '<div class="sharer">' +
-            '<div class="sharer-avatar">' + avatarLetter + '</div>' +
-            '<div>' +
-              '<div class="sharer-label">Shared by</div>' +
-              '<div class="sharer-name">' + esc(sharer) + '</div>' +
-              (l.sharerCity ? '<div class="sharer-location">\uD83C\uDF31 Grown in ' + esc(l.sharerCity) + '</div>' : '') +
-            '</div>' +
-          '</div>' +
-
-          provenanceNote +
-          noticeBanner +
-
-          (seedRows
-            ? '<div class="card"><div class="card-title">About these seeds</div>' + seedRows + '</div>'
-            : '') +
-
-          growSection +
-
-          (notes
-            ? '<div class="card"><div class="card-title">Notes</div><p class="notes">' + esc(notes) + '</p></div>'
-            : '') +
-
-          '<div class="actions">' +
-            '<a href="' + appLink + '" class="cta">' +
-              ICON_SPROUT_WHITE +
-              'Add to my Fr\u00f8' +
-            '</a>' +
-            '<p class="hint">Already have Fr\u00f8? Tap above to import directly.<br>New here? Download the app to start tracking your seeds.</p>' +
-            '<div class="store-buttons">' +
-              '<button onclick="showStoreModal(\'android\')" class="store-btn">' +
-                ICON_ANDROID + 'Google Play' +
-              '</button>' +
-              '<button onclick="showStoreModal(\'ios\')" class="store-btn">' +
-                ICON_APPLE + 'App Store' +
-              '</button>' +
-            '</div>' +
-          '</div>' +
-
-          '<div class="footer">' +
-            '<div class="footer-brand">' +
-              ICON_SPROUT_GRAY +
-              '<span>Fr\u00f8 &mdash; Fra fr\u00f8 til fr\u00f8</span>' +
-            '</div>' +
-            '<div class="footer-owner">Operated by \u00d8rjan Stor\u00e5s &mdash; <a href="mailto:contact@xn--fr-mka.app">contact@fr\u00f8.app</a></div>' +
-          '</div>' +
-
-          '</div>';
-      }
-
-      // ─── Load ──────────────────────────────────────────────────────────────────
-
-      function load() {
-        var shareId = window.location.pathname.replace(/^\//, "").split("/")[0];
-        if (!shareId) {
-          showError("Share link not found.");
-          return;
-        }
-
-        var headers = {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: "Bearer " + SUPABASE_ANON_KEY,
-        };
-
-        fetch(
-          SUPABASE_URL + "/rest/v1/seed_shares?id=eq." + shareId + "&select=*",
-          { headers: headers }
-        )
-          .then(function(res) { return res.json(); })
-          .then(function(rows) {
-            if (!rows || rows.length === 0) {
-              showError("This share link is invalid or has expired.");
-              return;
-            }
-            var share = rows[0];
-
-            fetch(
-              SUPABASE_URL + "/rest/v1/seed_share_claims?share_id=eq." + shareId + "&select=id",
-              { headers: Object.assign({}, headers, { Prefer: "count=exact" }) }
-            )
-              .then(function(cr) {
-                var range = cr.headers.get("content-range") || "";
-                var claimCount = parseInt(range.split("/")[1] || "0", 10) || 0;
-                render(share, shareId, claimCount);
-              })
-              .catch(function() { render(share, shareId, 0); });
-          })
-          .catch(function() {
-            showError("Could not load seed info. Please check your connection.");
-          });
-      }
-
-      load();
-    </script>
-  </body>
+</body>
 </html>
