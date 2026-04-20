@@ -68,51 +68,93 @@
 
     /* ── App Store buttons ────────────────────── */
     .store-buttons {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-bottom: 8px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      max-width: 320px;
+      margin: 0 auto;
     }
 
     .store-btn {
-      display: inline-flex;
+      display: flex;
       align-items: center;
-      gap: 9px;
-      background: #1a3820;
-      color: white;
+      justify-content: center;
+      gap: 8px;
+      background: white;
+      color: #374151;
       text-decoration: none;
-      padding: 13px 22px;
+      padding: 14px 12px;
       border-radius: 13px;
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 600;
+      border: 1.5px solid #e5e7eb;
       letter-spacing: -0.01em;
-      transition: background 0.15s, box-shadow 0.15s;
-      box-shadow: 0 2px 12px rgba(26, 56, 32, 0.28);
+      cursor: pointer;
+      font-family: inherit;
+      transition: border-color 0.15s, color 0.15s;
     }
 
     .store-btn:hover {
-      background: #16301a;
-      box-shadow: 0 4px 20px rgba(26, 56, 32, 0.38);
+      border-color: #1a3820;
+      color: #1a3820;
     }
 
-    .store-btn-label {
-      display: flex;
-      flex-direction: column;
-      text-align: left;
+    .store-btn svg { flex-shrink: 0; }
+
+    /* ── Store modal ───────────────────────────── */
+    .store-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.5);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
     }
 
-    .store-btn-sub {
-      font-size: 10px;
-      font-weight: 400;
-      opacity: 0.75;
-      letter-spacing: 0;
+    .store-modal.open { display: flex; }
+
+    .store-modal-box {
+      background: white;
+      border-radius: 20px;
+      padding: 28px 24px;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
     }
 
-    .store-btn-name {
-      font-size: 15px;
+    .store-modal-icon { font-size: 36px; margin-bottom: 12px; }
+
+    .store-modal-title {
+      font-size: 18px;
       font-weight: 700;
+      color: #111827;
+      margin-bottom: 10px;
     }
+
+    .store-modal-text {
+      font-size: 14px;
+      color: #6b7280;
+      line-height: 1.65;
+      margin-bottom: 20px;
+    }
+
+    .store-modal-btn {
+      background: #1a3820;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 13px 24px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+
+    .store-modal-btn:hover { background: #16301a; }
 
     /* ── Features ─────────────────────────────── */
     .features {
@@ -235,13 +277,14 @@
       <p class="tagline">Track your plant collection from seed to harvest. Share seeds with other growers.</p>
 
       <div class="store-buttons">
-        <a href="https://apps.apple.com/app/fr%C3%B8/id6747700634" class="store-btn">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-          <span class="store-btn-label">
-            <span class="store-btn-sub">Download on the</span>
-            <span class="store-btn-name">App Store</span>
-          </span>
-        </a>
+        <button onclick="showStoreModal('android')" class="store-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13a8 8 0 0 1 8-8 8 8 0 0 1 8 8v7H4z"/><path d="M8 21v1M16 21v1M7 5.5 5 3M17 5.5l2-2.5"/><circle cx="9.5" cy="11" r="0.5" fill="currentColor"/><circle cx="14.5" cy="11" r="0.5" fill="currentColor"/></svg>
+          Google Play
+        </button>
+        <button onclick="showStoreModal('ios')" class="store-btn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          App Store
+        </button>
       </div>
     </header>
 
@@ -306,6 +349,30 @@
       <p class="footer-copy">Developed by Ørjan Storås</p>
     </div>
   </footer>
+
+  <div id="store-modal" class="store-modal" onclick="closeStoreModal(event)">
+    <div class="store-modal-box">
+      <div class="store-modal-icon">🌱</div>
+      <div class="store-modal-title">Coming soon!</div>
+      <p id="store-modal-text" class="store-modal-text"></p>
+      <button class="store-modal-btn" onclick="closeStoreModal()">Got it</button>
+    </div>
+  </div>
+
+  <script>
+    function showStoreModal(platform) {
+      var storeName = platform === "ios" ? "App Store" : "Google Play";
+      document.getElementById("store-modal-text").innerHTML =
+        "Fr\u00f8 isn\u2019t on " + storeName + " yet \u2014 but we\u2019re working on it!<br><br>" +
+        "We\u2019ll be live soon. Thank you for your patience!";
+      document.getElementById("store-modal").classList.add("open");
+    }
+
+    function closeStoreModal(e) {
+      if (e && e.target !== document.getElementById("store-modal")) return;
+      document.getElementById("store-modal").classList.remove("open");
+    }
+  </script>
 
 </body>
 </html>
