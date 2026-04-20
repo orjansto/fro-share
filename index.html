@@ -628,6 +628,7 @@
         var seedRows =
           (l.yearHarvested ? row("Harvested", l.yearHarvested) : "") +
           (l.source ? row("Source", l.source) : "") +
+          (l.accessionNumber ? row("Accession \u0023", l.accessionNumber) : "") +
           (l.germinationRatePct != null ? row("Germination rate", l.germinationRatePct + "%") : "") +
           (l.quantitySeeds ? row("Seeds in packet", l.quantitySeeds) : "");
 
