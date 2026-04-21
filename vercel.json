@@ -1,6 +1,6 @@
 {
   "rewrites": [
     { "source": "/privacy", "destination": "/privacy.html" },
-    { "source": "/:shareId", "destination": "/share.html" }
+    { "source": "/:shareId((?!api).*)", "destination": "/share.html" }
   ]
 }
