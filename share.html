@@ -343,6 +343,36 @@
 
       .store-btn svg { flex-shrink: 0; }
 
+      /* ── Beta banner ───────────────────────── */
+      .beta-banner {
+        background: #1a3820;
+        color: #e8f0d8;
+        border-radius: 16px;
+        padding: 18px 20px;
+        margin-bottom: 12px;
+        line-height: 1.6;
+      }
+
+      .beta-banner-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 6px;
+      }
+
+      .beta-banner-body {
+        font-size: 13px;
+        color: #d4e9c2;
+        line-height: 1.65;
+      }
+
+      .beta-banner-body a {
+        color: #fff;
+        font-weight: 600;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+
       /* ── Footer ────────────────────────────── */
       .footer {
         display: flex;
@@ -574,12 +604,17 @@
 
       function showStoreModal(platform) {
         logStoreClick(platform);
-        var storeName = platform === "ios" ? "App Store" : "Google Play";
-        document.getElementById("store-modal-text").innerHTML =
-          "Fr\u00f8 isn\u2019t on " + storeName + " yet \u2014 but we\u2019re working on it!<br><br>" +
-          "The good news: <strong>this seed will still be here waiting for you.</strong> " +
-          "Once the app is available, just rescan the QR code or reopen this link and the seed will be ready to import.<br><br>" +
-          "We\u2019ve noted your interest \u2014 thank you for your patience!";
+        if (platform === "android") {
+          document.getElementById("store-modal-text").innerHTML =
+            "Fr\u00f8 is currently in closed beta testing on Android.<br><br>" +
+            "Want to try it? Send an email to <a href=\"mailto:contact@xn--fr-mka.app\" style=\"color:#1a3820;font-weight:600;\">contact@fr\u00f8.app</a> and we\u2019ll add you as a tester.<br><br>" +
+            "<strong>This seed will still be here waiting for you</strong> \u2014 just rescan the QR code or reopen this link once you have the app.";
+        } else {
+          document.getElementById("store-modal-text").innerHTML =
+            "Fr\u00f8 isn\u2019t on the App Store yet \u2014 but we\u2019re working on it!<br><br>" +
+            "The good news: <strong>this seed will still be here waiting for you.</strong> " +
+            "Once the app is available, just rescan the QR code or reopen this link and the seed will be ready to import.";
+        }
         document.getElementById("store-modal").classList.add("open");
       }
 
@@ -738,7 +773,16 @@
               ICON_SPROUT_WHITE +
               'Add to my Fr\u00f8' +
             '</a>' +
-            '<p class="hint">Already have Fr\u00f8? Tap above to import directly.<br>New here? Download the app to start tracking your seeds.</p>' +
+            '<p class="hint">Already have Fr\u00f8? Tap above to import directly.</p>' +
+            '<div class="beta-banner">' +
+              '<div class="beta-banner-title">New to Fr\u00f8?</div>' +
+              '<div class="beta-banner-body">' +
+                'You\u2019re one of the first to receive seeds shared through the app. ' +
+                'Fr\u00f8 is a seed collection tracker for gardeners who save and swap seeds \u2014 currently in early beta on Android.<br><br>' +
+                'Want early access? Email <a href="mailto:contact@xn--fr-mka.app">contact@fr\u00f8.app</a> and we\u2019ll add you as a tester. ' +
+                'This seed will be waiting for you once you\u2019re in.' +
+              '</div>' +
+            '</div>' +
             '<div class="store-buttons">' +
               '<button onclick="showStoreModal(\'android\')" class="store-btn">' +
                 ICON_ANDROID + 'Google Play' +
