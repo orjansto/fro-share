@@ -40,7 +40,10 @@ Fields to extract (omit any field that is not visible or cannot be determined):
   "plantingDepthCm": 10,
   "storageTempC": 5,
   "storageLifeDays": 14,
-  "establishmentDays": 21
+  "establishmentDays": 21,
+  "heightMinCm": 30,
+  "heightMaxCm": 60,
+  "sunExposure": "full_sun | part_sun | shade"
 }
 
 Rules:
@@ -54,6 +57,8 @@ Rules:
 - storageTempC: recommended dormant storage temperature (e.g. "Store at 5°C").
 - storageLifeDays: for scions/cuttings, how many days they remain viable after being cut.
 - establishmentDays: for cuttings/runners, how many days until rooted/established.
+- heightMinCm / heightMaxCm: mature plant height in cm. Convert inches if needed. Use a range when a range is printed; equal values for a single height.
+- sunExposure: "full_sun" (6+ hours direct sun), "part_sun" (3–6 hours or dappled), "shade" (<3 hours). Omit if not stated.
 - category: use "ornamental" for any plant grown primarily for beauty — trees, shrubs, roses, ornamental grasses, bamboo, bulb flowers, perennial and annual flowers. Use "fruit" only for plants grown to eat the fruit (apple, strawberry, currant). Use "vegetable" for edible crops even when botanically a fruit (tomato, courgette, bean).
 - directSow: true if seeds can be sown directly outdoors; false if start indoors only. Omit for non-seed material.
 - source: the brand or company name printed on the label.

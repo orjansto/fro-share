@@ -83,12 +83,17 @@ export default async function handler(req, res) {
     `  "daysToMaturity": 75,\n` +
     `  "spacingCm": 45,\n` +
     `  "rowSpacingCm": 60,\n` +
+    `  "heightMinCm": 30,\n` +
+    `  "heightMaxCm": 60,\n` +
+    `  "sunExposure": "full_sun | part_sun | shade",\n` +
     windowFields +
     `}\n\n` +
     `Rules:\n` +
     `- All window dates: always use year 2000. Adjust windows for the grower's latitude and last frost date.\n` +
     `- Only include fields you are confident about for this specific variety and material type.\n` +
-    `- For ${pt} material, focus on the ${isSeed ? "sowing" : "planting"} window appropriate for this type.`;
+    `- For ${pt} material, focus on the ${isSeed ? "sowing" : "planting"} window appropriate for this type.\n` +
+    `- heightMinCm / heightMaxCm: mature plant height in cm. Use a range when typical; equal values for a single height.\n` +
+    `- sunExposure: "full_sun" (6+ hours direct sun), "part_sun" (3–6 hours), "shade" (<3 hours).`;
 
   const body = {
     contents: [{ parts: [{ text: prompt }] }],
